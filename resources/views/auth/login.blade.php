@@ -5,15 +5,20 @@
 @section('description', 'در این صفحه می‌توانید وارد اکانت خود در وب‌سایت شوید.')
 
 @section('content')
-    <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
+    <form id="formAuthentication" class="mb-3" action="{{route('login')}}" method="POST">
+        @csrf
+        @extends('auth.layouts.recaptcha')
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
         <div class="mb-3">
-            <label for="email" class="form-label">ایمیل یا نام کاربری</label>
-            <input type="text" class="form-control text-start" dir="ltr" id="email" name="email-username" placeholder="ایمیل یا نام کاربری خود را وارد کنید" autofocus>
+            <label for="email" class="form-label">ایمیل</label>
+            <input type="text" class="form-control text-start" dir="ltr" id="email" name="email" placeholder="ایمیل یا نام کاربری خود را وارد کنید" autofocus>
         </div>
         <div class="mb-3 form-password-toggle">
             <div class="d-flex justify-content-between">
                 <label class="form-label" for="password">رمز عبور</label>
-                <a href="auth-forgot-password-basic.html">
+                <a href="{{route('password.email')}}">
                     <small>رمز عبور را فراموش کردید؟</small>
                 </a>
             </div>
@@ -35,7 +40,7 @@
 
     <p class="text-center">
         <span>کاربر جدید هستید؟</span>
-        <a href="auth-register-basic.html">
+        <a href="{{route('register')}}">
             <span>یک حساب بسازید</span>
         </a>
     </p>

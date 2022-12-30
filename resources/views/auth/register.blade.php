@@ -5,19 +5,31 @@
 @section('description', 'در این صفحه می‌توانید در سایت ثبت نام کنید.')
 
 @section('content')
-    <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
+    <form id="formAuthentication" class="mb-3" action="{{route('register')}}" method="POST">
+        @csrf
+        @extends('auth.layouts.recaptcha')
+    @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
         <div class="mb-3">
-            <label for="username" class="form-label">نام کاربری</label>
-            <input type="text" class="form-control text-start" dir="ltr" id="username" name="username" placeholder="نام کاربری خود را وارد کنید" autofocus>
+            <label for="name" class="form-label">نام و نام خانوادگی</label>
+            <input type="text" class="form-control text-start" dir="ltr" id="name" name="name" placeholder="نام خود را وارد کنید" value="{{old('name')}}" autofocus>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">ایمیل</label>
-            <input type="text" class="form-control text-start" dir="ltr" id="email" name="email" placeholder="ایمیل خود را وارد کنید">
+            <input type="text" class="form-control text-start" dir="ltr" id="email" name="email" placeholder="ایمیل خود را وارد کنید" value="{{old('email')}}">
         </div>
         <div class="mb-3 form-password-toggle">
             <label class="form-label" for="password">رمز عبور</label>
             <div class="input-group input-group-merge">
                 <input type="password" id="password" class="form-control text-start" dir="ltr" name="password" placeholder="············" aria-describedby="password">
+                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+            </div>
+        </div>
+        <div class="mb-3 form-password-toggle">
+            <label class="form-label" for="password_confirmation">تکرار رمز عبور</label>
+            <div class="input-group input-group-merge">
+                <input type="password" id="password_confirmation" class="form-control text-start" dir="ltr" name="password_confirmation" placeholder="············" aria-describedby="password">
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
             </div>
         </div>
@@ -36,7 +48,7 @@
 
     <p class="text-center">
         <span>حساب کاربری دارید؟</span>
-        <a href="auth-login-basic.html">
+        <a href="{{route('login')}}">
             <span>وارد شوید</span>
         </a>
     </p>

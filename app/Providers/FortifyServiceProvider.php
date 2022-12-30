@@ -6,9 +6,13 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Models\User;
+use App\Rules\auth\GoogleRecaptchaV3;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 
@@ -31,12 +35,26 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Fortify::loginView(function () {
-            return view('auth.login');
+
+        // add custom rule to fortify login
+        Fortify::authenticateUsing(function (Request $request) {
+            Validator::make($request->all(), [
+                Fortify::username() => 'required|string',
+                'password' => 'required|string',
+                'g-recaptcha' => ['required', new GoogleRecaptchaV3(6)],
+            ])->validate();
+            $user = User::where('email', $request->email)->first();
+            if ($user && Hash::check($request->password, $user->password)) {
+                return $user;
+            }
         });
 
         Fortify::registerView(function () {
             return view('auth.register');
+        });
+
+        Fortify::loginView(function () {
+            return view('auth.login');
         });
 
         Fortify::verifyEmailView(function () {
