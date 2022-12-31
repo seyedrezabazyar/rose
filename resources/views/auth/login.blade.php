@@ -7,7 +7,7 @@
 @section('content')
     <form id="formAuthentication" class="mb-3" action="{{route('login')}}" method="POST">
         @csrf
-        @extends('auth.layouts.recaptcha')
+        @include('auth.layouts.recaptcha')
         @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>
         @endforeach

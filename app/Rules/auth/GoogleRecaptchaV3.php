@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 class GoogleRecaptchaV3 implements Rule
 {
     public int $minimumHumanScore;
+
     /**
      * Create a new rule instance.
      *
@@ -21,8 +22,8 @@ class GoogleRecaptchaV3 implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
@@ -36,9 +37,7 @@ class GoogleRecaptchaV3 implements Rule
                 'response' => request()->input('g-recaptcha'),
                 'remoteip' => request()->ip()
             ]);
-
             $responseObject = json_decode($response->body());
-
             return $responseObject->success && ($responseObject->score > ($this->minimumHumanScore / 10));
 
         } catch (\Exception $e) {
